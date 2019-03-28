@@ -4,10 +4,9 @@ title:  "Spring Cloud Feign重试机制"
 date:   2018-12-25 21:28:50 +0800
 categories: jekyll update
 ---
-# Spring Cloud Feign重试机制
-1. 在spring cloud中feign是没有重试机制的，但是其复用Ribbon重试逻辑
+在spring cloud中feign是没有重试机制的，但是其复用Ribbon重试逻辑
 
-## RetryTemplate
+### RetryTemplate
 1. 重试逻辑一般使用重试模版`org.springframework.retry.support.RetryTemplate`实现
 2. 其核心逻辑在`org.springframework.retry.support.RetryTemplate#doExecute`方法中
 
@@ -122,8 +121,8 @@ public boolean canRetry(RetryContext context) {
 此处会委托给`org.springframework.cloud.netflix.ribbon.RibbonLoadBalancedRetryPolicy`
 
 
-## RibbonLoadBalancedRetryPolicy
-### 核心方法`canRetryNextServer()`
+### RibbonLoadBalancedRetryPolicy
+#### 核心方法`canRetryNextServer()`
 其中简单判断当前`nextServerCount`是否大于和等于`getMaxRetriesOnNextServer()`和请求是否可以重试
 ```java
 @Override
@@ -136,7 +135,7 @@ public boolean canRetryNextServer(LoadBalancedRetryContext context) {
 ```
 其中`getMaxRetriesOnNextServer()`由`ribbon.MaxAutoRetriesNextServer`配置，默认为1
 
-### 方法`org.springframework.cloud.netflix.ribbon.RibbonLoadBalancedRetryPolicy#canRetry()`
+#### 方法`org.springframework.cloud.netflix.ribbon.RibbonLoadBalancedRetryPolicy#canRetry()`
 ```java
 public boolean canRetry(LoadBalancedRetryContext context) {
 	HttpMethod method = context.getRequest().getMethod();
@@ -145,10 +144,10 @@ public boolean canRetry(LoadBalancedRetryContext context) {
 ```
 此方法仅仅简单判断请求是否`GET`方式和是否配置`ribbon.OkToRetryOnAllOperations`,默认为`false`
 
-## 异常重试
+### 异常重试
 通过以上代码我们发现：如果异常情况下，仿佛while循环中的条件一直为true，无法结束。其实有个重要逻辑在`registerThrowable()`方法中实现
 
-### registerThrowable()
+#### registerThrowable()
 异常会进入此方法
 ```java
 protected void registerThrowable(RetryPolicy retryPolicy, RetryState state,
@@ -166,7 +165,7 @@ lbContext.registerThrowable(throwable);
 policy.registerThrowable(lbContext, throwable);
 ```
 其中2行代码都很重要:
-### 第一行
+#### 第一行
 第一行代码会执行RetryContextSupport中的registerThrowable()
 ```java
 public void registerThrowable(Throwable throwable) {
@@ -182,7 +181,7 @@ if(context.getRetryCount() == 0) {
 }
 ```
 
-### 第二行
+#### 第二行
 第二行会执行RibbonLoadBalancedRetryPolicy中的registerThrowable()
 ```java
 @Override
