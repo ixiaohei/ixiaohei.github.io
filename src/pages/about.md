@@ -3,7 +3,7 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-ixiaohei，10年软件开发老兵，拥有富丰传统、金融和互联网软件开发经验。
+所有人ixiaohei：10年软件开发老兵，拥有富丰传统、金融和互联网软件开发经验。
 擅长golang和java技术栈服务器开发；
 
 <div>
