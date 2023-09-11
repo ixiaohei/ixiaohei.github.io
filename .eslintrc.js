@@ -4,7 +4,11 @@ module.exports = {
     es2022: true,
     browser: true,
   },
-  extends: ["eslint:recommended", "plugin:astro/recommended"],
+  extends: [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:astro/recommended",
+  ],
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
